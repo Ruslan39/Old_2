@@ -1,3 +1,5 @@
+"use strict";
+
 class Game {
   constructor(container) {
     this.container = container;
@@ -7,23 +9,42 @@ class Game {
 
     this.reset();
 
-    this.registerEvents();
+    this.registerEvents();    
   }
 
   reset() {
-    this.setNewWord();
+    this.setNewWord();    
     this.winsElement.textContent = 0;
     this.lossElement.textContent = 0;
   }
 
-  registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-     */
+  registerEvents() {    
+    const currentSymbolToType = this.currentSymbol.textContent.charCodeAt(0);
+    //let comparisonStatus = false;
+    console.log(`Надо ${currentSymbolToType}`);
+
+  function comparison(event) {
+    if (currentSymbolToType == event.keyCode) {
+      console.log(event.keyCode);
+      console.log(`success`);
+      this.success();
+      //comparisonStatus = false;
+      } else {
+      console.log(event.keyCode);
+      console.log(`fail`);
+      this.fail();
+      //comparisonStatus = true;
+      }
+    }
+
+    document.addEventListener(`keypress`, comparison);
+
+    // if (comparisonStatus = true) {
+    //   this.success();
+    // } else {
+    //   this.fail();
+    // }
+    
   }
 
   success() {
@@ -69,7 +90,7 @@ class Game {
         'javascript'
       ],
       index = Math.floor(Math.random() * words.length);
-
+      
     return words[index];
   }
 
@@ -86,5 +107,4 @@ class Game {
   }
 }
 
-new Game(document.getElementById('game'))
-
+new Game(document.getElementById('game'));
