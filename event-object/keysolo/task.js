@@ -7,47 +7,56 @@ class Game {
     this.winsElement = container.querySelector('.status__wins');
     this.lossElement = container.querySelector('.status__loss');
 
+    this.timer = container.querySelector(`.countDown`);
+
     this.reset();
 
     this.registerEvents();    
-  }
+  }  
 
   reset() {
     this.setNewWord();    
     this.winsElement.textContent = 0;
     this.lossElement.textContent = 0;
+    this.timer.textContent = 0;
+  }
+
+  countDown(word) {
+    let secLeft = word.length;
+
+    let timeLeft = () => {
+      this.timer.textContent = `${secLeft}`;
+      secLeft--;
+
+      if (secLeft == -1) {
+        this.timer.textContent = 0;
+        clearInterval(timerStart);
+        this.fail();
+      }
+    }    
+
+    //const timerStart = setInterval(timeLeft, 1000);
   }
 
   registerEvents() {    
-    const currentSymbolToType = this.currentSymbol.textContent.charCodeAt(0);
-    //let comparisonStatus = false;
-    console.log(`Надо ${currentSymbolToType}`);
+    let currentSymbolToType = this.currentSymbol.textContent.toLowerCase().charCodeAt(0);
 
-  function comparison(event) {
-    if (currentSymbolToType == event.keyCode) {
-      console.log(event.keyCode);
-      console.log(`success`);
-      this.success();
-      //comparisonStatus = false;
+    let comparison = (event) => {
+      currentSymbolToType = this.currentSymbol.textContent.charCodeAt(0);
+
+      if (currentSymbolToType == event.key.toLowerCase().charCodeAt(0)) {
+        this.success();
       } else {
-      console.log(event.keyCode);
-      console.log(`fail`);
-      this.fail();
-      //comparisonStatus = true;
+        this.fail();
       }
+
     }
 
     document.addEventListener(`keypress`, comparison);
 
-    // if (comparisonStatus = true) {
-    //   this.success();
-    // } else {
-    //   this.fail();
-    // }
-    
   }
 
-  success() {
+  success() {    
     this.currentSymbol.classList.add('symbol_correct');
     this.currentSymbol = this.currentSymbol.nextElementSibling;
     if (this.currentSymbol !== null) {
@@ -63,16 +72,18 @@ class Game {
 
   fail() {
     if (++this.lossElement.textContent === 5) {
-      alert('Вы проиграли!');
+      alert('Вы проиграли!');      
       this.reset();
     }
     this.setNewWord();
   }
 
   setNewWord() {
-    const word = this.getWord();
+    const word = this.getWord();    
 
     this.renderWord(word);
+
+    this.countDown(word);
   }
 
   getWord() {
@@ -103,7 +114,7 @@ class Game {
       .join('');
     this.wordElement.innerHTML = html;
 
-    this.currentSymbol = this.wordElement.querySelector('.symbol_current');
+    this.currentSymbol = this.wordElement.querySelector('.symbol_current');    
   }
 }
 
